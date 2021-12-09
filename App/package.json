@@ -1,0 +1,14 @@
+{
+  "name": "beep-boop-beep",
+  "version": "1.0.0",
+  "description": "basic custom controller software for phidget board",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "lucy matchett",
+  "license": "ISC",
+  "dependencies": {
+    "phidget22": "^2.8.1"
+  }
+}
