@@ -4,6 +4,9 @@ var testFunctions = require( './phidgetTestFunctions');
 //containers
 let voltage_inputs = [], digital_inputs = [], digital_outputs = [];
 
+//flags utility
+var configed = false;
+
 //@TODO: eventually this would be from a config file
 var vinput_count = 4, dinput_count = 8, doutput_count = 4;
 var system_output_indicator = 1;
@@ -49,6 +52,10 @@ const runTest = () => {
 
     Promise.all(openPromiseList).then(function(values){
         console.log("Controller On & Ready");
+
+        //check if configed
+        if(!configed)config();
+
         //set system led ons - start up "animation"
         digital_outputs.forEach(i => i.setDutyCycle(1))
 
@@ -56,13 +63,11 @@ const runTest = () => {
         let o_index;
         var timeLightsOff = setInterval(function(){
             o_index = digital_outputs.findIndex((element, index) => index != system_output_indicator && element.getState());
-            console.log(o_index);
             if(o_index >= 0 )
                 digital_outputs[o_index].setDutyCycle(0);
             else
                 clearInterval(timeLightsOff);
         }, 1000)
-
     })
 }
 
@@ -99,6 +104,22 @@ const close = ( clear = false ) => {
         digital_inputs.length = 0;
         digital_outputs.length = 0;
     }
+}
+
+const config = () => {
+    //@TODO: eventually also tied to a config file
+
+    //setting thresholds for analogue / voltage inputs
+    voltage_inputs.forEach( (i, index) => {
+        i.setVoltageRatioChangeTrigger( 0.001 )
+        .catch( (err)=>{
+            console.log("phidget error updating change trigger");
+            console.log(err);
+        })
+    })
+
+    configed = true;
+
 }
 
 module.exports = { run, runTest }
