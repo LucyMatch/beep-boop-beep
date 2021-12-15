@@ -1,6 +1,7 @@
 var phidget22 = require('phidget22');
 var phidget = require('./scripts/phidgets');
 var dialog = require('dialog-node');
+var osc = require('./scripts/phidgetFunctions/basicOSC');
 
 require('dotenv').config() //get main config settings from .env
 
@@ -10,6 +11,7 @@ const selectMode = (code, retVal, stderr) => {
     if(retVal == "1"){
         runtime_function = phidget.runOSC;
         console.log("set controller mode to basic osc");
+        osc.openPort();
     }else{
         runtime_function = phidget.runTest;
         console.log("set controller mode to default test");
@@ -30,9 +32,11 @@ const start = (code, retVal, stderr) => {
 //Run it!
 //if in development mode skip the dialogue prompts
 if(process.env.DEVMODE == "true"){
-
+    //open osc 
+    osc.openPort();
+    //open phidget
     runtime_function = phidget.runOSC;
-    var conn = new phidget22.Connection(5661, 'localhost');
+    var conn = new phidget22.Connection(parseInt(process.env.PHIDGETPORT), process.env.PHIDGETHOST);
     conn.connect().then(runtime_function);
 
 }else{
@@ -44,6 +48,6 @@ if(process.env.DEVMODE == "true"){
         5000, 
         selectMode
     );
-    
+
 }
 
