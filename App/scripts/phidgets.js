@@ -14,9 +14,7 @@ var system_output_indicator = 1;
 
 
 const runOSC = () => {
-
-    console.log("hi");
-
+    
     //create objects per controllers configuration
     init();
 

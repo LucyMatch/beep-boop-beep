@@ -9,6 +9,8 @@
   "author": "lucy matchett",
   "license": "ISC",
   "dependencies": {
+    "dialog-node": "^0.2.1",
+    "dotenv": "^10.0.0",
     "phidget22": "^2.8.1"
   }
 }
