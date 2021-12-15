@@ -1,5 +1,6 @@
 var phidget22 = require('phidget22');
-var testFunctions = require( './phidgetTestFunctions');
+var testFunctions = require( './phidgetFunctions/basicTest');
+var oscFunctions = require( './phidgetFunctions/basicOSC');
 
 //containers
 let voltage_inputs = [], digital_inputs = [], digital_outputs = [];
@@ -12,7 +13,40 @@ var vinput_count = 4, dinput_count = 8, doutput_count = 4;
 var system_output_indicator = 1;
 
 
-const run = () => {
+const runOSC = () => {
+
+    console.log("hi");
+
+    //create objects per controllers configuration
+    init();
+
+    //set callback functions to osc functions
+    voltage_inputs.forEach(i => {
+        i.onVoltageRatioChange = (voltageRatio) => {
+            oscFunctions.voltageInputChange(i, voltageRatio)
+        }
+        i.onError = (code, description) =>{
+            oscFunctions.onError(i, code, description);
+        }
+    })
+
+    digital_inputs.forEach(i => {
+        i.onStateChange = (state) => {
+            oscFunctions.digitalInputChange(i, state)
+        }
+        i.onError = (code, description) =>{
+            oscFunctions.onError(i, code, description);
+        }
+    })
+
+    digital_outputs.forEach(i => {
+        i.onError = (code, description) =>{
+            oscFunctions.onError(i, code, description);
+        }
+    })
+
+    //open channels + do led startup animation
+    defaultStart();
 
 }
 
@@ -44,31 +78,7 @@ const runTest = () => {
         }
     })
 
-    
-    var openPromiseList = []
-    voltage_inputs.forEach(i => {openPromiseList.push(i.open(5000));})
-    digital_inputs.forEach(i => {openPromiseList.push(i.open(5000));})
-    digital_outputs.forEach(i => {openPromiseList.push(i.open(5000));})
-
-    Promise.all(openPromiseList).then(function(values){
-        console.log("Controller On & Ready");
-
-        //check if configed
-        if(!configed)config();
-
-        //set system led ons - start up "animation"
-        digital_outputs.forEach(i => i.setDutyCycle(1))
-
-        //turn off all but system light
-        let o_index;
-        var timeLightsOff = setInterval(function(){
-            o_index = digital_outputs.findIndex((element, index) => index != system_output_indicator && element.getState());
-            if(o_index >= 0 )
-                digital_outputs[o_index].setDutyCycle(0);
-            else
-                clearInterval(timeLightsOff);
-        }, 1000)
-    })
+    defaultStart();
 }
 
 const init = () => {
@@ -95,17 +105,6 @@ const init = () => {
     
 }
 
-const close = ( clear = false ) => {
-    if(voltage_inputs)voltage_inputs.forEach(i => i.close())
-    if(digital_inputs)digital_inputs.forEach(i => i.close())
-    if(digital_outputs)digital_outputs.forEach(i => i.close())
-    if(clear){
-        voltage_inputs.length = 0;
-        digital_inputs.length = 0;
-        digital_outputs.length = 0;
-    }
-}
-
 const config = () => {
     //@TODO: eventually also tied to a config file
 
@@ -122,4 +121,44 @@ const config = () => {
 
 }
 
-module.exports = { run, runTest }
+const defaultStart = () => {
+
+    var openPromiseList = []
+    voltage_inputs.forEach(i => {openPromiseList.push(i.open(5000));})
+    digital_inputs.forEach(i => {openPromiseList.push(i.open(5000));})
+    digital_outputs.forEach(i => {openPromiseList.push(i.open(5000));})
+
+    Promise.all(openPromiseList).then(function(values){
+        console.log("Controller On & Ready");
+
+        //check if configed
+        if(!configed)config();
+
+        //set system led ons - start up "animation"
+        digital_outputs.forEach(i => i.setDutyCycle(1))
+
+        //turn off all but system light
+        let o_index;
+        var timeLightsOff = setInterval(function(){
+            o_index = digital_outputs.findIndex((element, index) => index != system_output_indicator && element.getState());
+            if(o_index >= 0 )
+                digital_outputs[o_index].setDutyCycle(0);
+            else
+                clearInterval(timeLightsOff);
+        }, 250)
+    })
+
+}
+
+const close = ( clear = false ) => {
+    if(voltage_inputs)voltage_inputs.forEach(i => i.close())
+    if(digital_inputs)digital_inputs.forEach(i => i.close())
+    if(digital_outputs)digital_outputs.forEach(i => i.close())
+    if(clear){
+        voltage_inputs.length = 0;
+        digital_inputs.length = 0;
+        digital_outputs.length = 0;
+    }
+}
+
+module.exports = { runOSC, runTest }
