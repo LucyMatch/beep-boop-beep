@@ -61,7 +61,7 @@ const voltageInputChange = (self, voltage) => {
                 value : voltage
             }
         ]
-    })
+    },process.env.UDPSENDHOST, parseInt(process.env.UDPSENDPORT))
 }
 
 const onError = (self, code, description) => {
@@ -93,8 +93,8 @@ const digitalInputChange = (self, state) => {
                 value : state
             }
         ]
-    })
-    
+    },process.env.UDPSENDHOST, parseInt(process.env.UDPSENDPORT))
+
 }
 
 module.exports = { 
