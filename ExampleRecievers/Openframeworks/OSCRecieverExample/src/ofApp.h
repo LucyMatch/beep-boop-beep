@@ -27,6 +27,17 @@ struct INPUT_DATA {
 	bool bvalue;
 };
 
+struct SHAPE {
+	float x = 0;
+	float y = 0;
+	float alpha = 255;
+	float r = 0;
+	bool dead = false;
+	bool growing = true;
+	bool fading = true;
+	ofColor c = ofColor(0, 0, 0);
+};
+
 class ofApp : public ofBaseApp{
 
 	public:
@@ -36,6 +47,9 @@ class ofApp : public ofBaseApp{
 
 		INPUT_DATA parseMessage(ofxOscMessage m);
 		void updateInputs( INPUT_DATA data );
+
+		void spawnShape(ofColor c);
+		void updateShape();
 
 		void keyPressed(int key);
 		void keyReleased(int key);
@@ -49,7 +63,11 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 
-		float bg_alpha = 0;
+		float bg_alpha = 255;
+		ofColor bg = ofColor(255,255,255,255);
+
+		vector<SHAPE> shapes;
+		bool fill = false, grow = false, fade = false, bounce = false;
 
 		ofxOscReceiver receiver;
 		ofxOscSender sender;
