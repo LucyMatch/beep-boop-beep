@@ -55,18 +55,18 @@ void ofApp::draw(){
 		ofSetColor(ofColor(s.c, s.alpha));
 
 		//option 1
-		ofDrawCircle( s.x, s.y, s.r );
+		//ofDrawCircle( s.x, s.y, s.r );
 
 		//option 2
 		//ofRotateDeg(45);
 		//ofDrawRectangle(s.x, s.y, s.r, s.r);
 
 		//option 3
-		//ofPushMatrix();
-		//	ofTranslate(s.x, s.y);
-		//	ofRotateDeg(45);
-		//	ofDrawRectangle(0, 0, s.r, s.r);
-		//ofPopMatrix();
+		ofPushMatrix();
+			ofTranslate(s.x, s.y);
+			ofRotateDeg(45);
+			ofDrawRectangle(0, 0, s.r, s.r);
+		ofPopMatrix();
 	}
 	
 }
