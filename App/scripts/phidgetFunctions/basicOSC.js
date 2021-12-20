@@ -1,7 +1,14 @@
 var osc = require("osc");
 require('dotenv').config() //get main config settings from .env
 
-//OSC SERVERING
+var osc_settings = { 
+    onInitCallBack : () => {return { msg : 'default on init' }},
+    onInitComplete : () => {console.log('default on init complete');},
+    localSendAddress: process.env.UDPSENDHOST,
+    localSendPort: parseInt(process.env.UDPSENDPORT)
+}
+
+//OSC LISTENING AT PORT
 //configure osc udp
 var udpPort = new osc.UDPPort({
     localAddress: process.env.UDPHOST,
@@ -36,7 +43,28 @@ udpPort.on("ready", function () {
 });
 
 udpPort.on("message", function (oscMessage) {
+
     console.log(oscMessage);
+
+    //if recieved init msgs
+    //send back all current values
+    if(oscMessage.address.includes("init")){
+        console.log("recieved init handshake from output application");
+        var payload = osc_settings.onInitCallBack();
+        payload.forEach( i => {
+            udpPort.send({
+                address : i.address,
+                args : [
+                    {   
+                        type: i.type,
+                        value : i.value
+                    }
+                ]
+            },process.env.UDPSENDHOST, parseInt(process.env.UDPSENDPORT))
+        })
+        osc_settings.onInitComplete();
+    }
+
 });
 
 udpPort.on("error", function (err) {
@@ -101,5 +129,6 @@ module.exports = {
 openPort,
 voltageInputChange, 
 digitalInputChange,  
-onError
+onError,
+osc_settings
 }

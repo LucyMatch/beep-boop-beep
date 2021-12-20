@@ -5,6 +5,7 @@ var osc = require('./scripts/phidgetFunctions/basicOSC');
 
 require('dotenv').config() //get main config settings from .env
 
+
 let runtime_function = null;
 
 const selectMode = (code, retVal, stderr) => {

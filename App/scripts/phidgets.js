@@ -10,13 +10,19 @@ var configed = false;
 
 //@TODO: eventually this would be from a config file
 var vinput_count = 4, dinput_count = 8, doutput_count = 4;
-var system_output_indicator = 1;
+var system_output_indicator = 1, init_output_indicator = 0;
 
 
 const runOSC = () => {
     
     //create objects per controllers configuration
     init();
+
+    //set callback function for on init payload
+    //when we recieve on init msg from a osc client
+    //we send all curr values
+    oscFunctions.osc_settings.onInitCallBack = initPayload;
+    oscFunctions.osc_settings.onInitComplete = initComplete;
 
     //set callback functions to osc functions
     voltage_inputs.forEach(i => {
@@ -45,7 +51,6 @@ const runOSC = () => {
 
     //open channels + do led startup animation
     defaultStart();
-
 }
 
 const runTest = () => {
@@ -157,6 +162,45 @@ const close = ( clear = false ) => {
         digital_inputs.length = 0;
         digital_outputs.length = 0;
     }
+}
+
+//this is tied as a called back to init payload in basic OSC
+//so this gets called is we recieve an OPSC message saying init
+//we then return this data packet for it to send to the client
+const initPayload = () => {
+
+    console.log("phidget init payload");
+
+    var payload = [];
+
+    //@TODO: tie this to what ever c onfig / template you use for defining inputs
+    voltage_inputs.forEach(i => {
+        var data = {};
+        data.address = "/controller/pot_" + i._channel;
+        data.channel = i._channel;
+        data.type = "f",
+        data.value = i.getVoltageRatio();
+        payload.push(data);
+    })
+
+    digital_inputs.forEach(i => {
+        var data = {};
+        data.address = "/controller/btn_" + i._channel
+        if(parseInt(i._channel) > 3) data.address = "/controller/swt_" + (parseInt(i._channel) - 4)
+        data.channel = i._channel;
+        data.type = i.getState() ? "T" : "F";
+        data.value = i.getState(); 
+        payload.push(data);
+    })
+
+    console.log("Sending Client Initial Values Via : ",oscFunctions.osc_settings.localSendAddress, " : ", oscFunctions.osc_settings.localSendPort);
+    console.log(payload);
+
+    return payload;
+}
+
+const initComplete = () => {
+    digital_outputs[init_output_indicator].setDutyCycle(1);
 }
 
 module.exports = { runOSC, runTest }
