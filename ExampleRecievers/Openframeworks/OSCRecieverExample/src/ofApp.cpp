@@ -263,7 +263,7 @@ void ofApp::updateShape() {
 			else
 				s.r--;
 			//switch directions
-			if (s.r < 0 || s.r > ofGetWidth() /3)s.growing = !s.growing;
+			if (s.r < 0 || s.r > ofGetWidth() /2)s.growing = !s.growing;
 
 			//bounce alpha
 			if (fade) {
