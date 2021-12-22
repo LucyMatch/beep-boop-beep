@@ -8,3 +8,10 @@ fEATURE
   * a way to templatize / have a config file on the sketch side - define a format
     * then create a command for node app that can generate the config file needed for the sketch
 
+EXAMPLES
+
+* event based example ( OF )
+* Gui based example ( OF )
+
+
+

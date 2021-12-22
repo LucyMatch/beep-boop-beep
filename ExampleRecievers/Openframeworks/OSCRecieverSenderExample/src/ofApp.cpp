@@ -249,7 +249,7 @@ void ofApp::spawnShape( ofColor c ) {
 	temp.x = mouseX;
 	temp.y = mouseY;
 	if (!grow) {
-		temp.r = ofGetWidth() / 2;
+		temp.r = ofGetWidth() / 3;
 		temp.growing = false;
 	}
 	shapes.push_back(temp);
@@ -272,7 +272,7 @@ void ofApp::updateShape() {
 			else
 				s.r--;
 			//switch directions
-			if (s.r < 0 || s.r > ofGetWidth() /2)s.growing = !s.growing;
+			if (s.r < 0 || s.r > ofGetWidth() /3)s.growing = !s.growing;
 
 			//bounce alpha
 			if (fade) {
@@ -287,12 +287,12 @@ void ofApp::updateShape() {
 			if (grow)
 				s.r++;
 			else
-				s.r = ofClamp(--s.r, 0, ofGetWidth() / 2);
+				s.r = ofClamp(--s.r, 0, ofGetWidth() / 3);
 
 			if (fade)s.alpha = ofClamp(--s.alpha, 0, 255);
 
 			//mark as dead if need be
-			if (s.alpha == 0 || s.r == 0 || s.r >= ofGetWidth() / 2)s.dead = true;
+			if (s.alpha == 0 || s.r == 0 || s.r >= ofGetWidth() / 3)s.dead = true;
 		}
 
 		//std::cout << s.r << " / " << s.alpha << std::endl;
