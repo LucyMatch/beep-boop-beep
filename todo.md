@@ -10,7 +10,6 @@ fEATURE
 
 EXAMPLES
 
-* event based example ( OF )
 * Gui based example ( OF )
 
 

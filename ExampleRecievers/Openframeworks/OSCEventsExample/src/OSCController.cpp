@@ -129,11 +129,27 @@ void OSCController::parseUnrecognizedMessage(ofxOscMessage m) {
 //--------------------------------------------------------------
 void OSCController::triggerEvent(INPUT_DATA data) {
 
-	//std::cout << "in trigger event" << std::endl;
-
+	//trigger general input data event
 	static ControllerEvent newEvent;
 	newEvent.input = &data;
 	ofNotifyEvent( ControllerEvent::events, newEvent );
 
+	//trigger type specifc events
+	//@TODO: tie these definitions to config file
+	if (data.name == ("pot")) {
+		static ControllerRangeEvent type_event;
+		type_event.input = &data;
+		ofNotifyEvent(ControllerRangeEvent::events, type_event);
+	}
+	else if (data.name == ("swt")) {
+		static ControllerSwitchEvent type_event;
+		type_event.input = &data;
+		ofNotifyEvent(ControllerSwitchEvent::events, type_event);
+	}
+	else if (data.name == ("btn")) {
+		static ControllerButtonEvent type_event;
+		type_event.input = &data;
+		ofNotifyEvent(ControllerButtonEvent::events, type_event);
+	}
 
 }

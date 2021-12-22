@@ -2,7 +2,9 @@
 			OSC EVENTS EXAMPLE
 
 This example demostrates having custom events fired when 
-reciving new osc messages and tying them to sketch variables 
+reciving new osc messages and how to add listeners
+there is a listener for all inputs + for each range type
+this sketch prints values to console for testing
 
 */
 
@@ -20,6 +22,9 @@ class ofApp : public ofBaseApp{
 		void draw();
 
 		void onControllerEvent(ControllerEvent &e);
+		void onControllerRangeEvent(ControllerRangeEvent& e);
+		void onControllerSwitchEvent(ControllerSwitchEvent& e);
+		void onControllerButtonEvent(ControllerButtonEvent& e);
 
 		void keyPressed(int key);
 		void mousePressed(int x, int y, int button);

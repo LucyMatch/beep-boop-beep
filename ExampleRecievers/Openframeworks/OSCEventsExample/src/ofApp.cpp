@@ -11,8 +11,17 @@ void ofApp::setup(){
 	ofSetBackgroundAuto(false);
 	ofSetCircleResolution(200);
 
+	//start controller
 	controller = OSCController();
+
+	//add listeners
+	//general all inputs
 	ofAddListener( ControllerEvent::events, this, &ofApp::onControllerEvent );
+
+	//input type specific triggers
+	ofAddListener( ControllerRangeEvent::events, this, &ofApp::onControllerRangeEvent);
+	ofAddListener( ControllerSwitchEvent::events, this, &ofApp::onControllerSwitchEvent);
+	ofAddListener( ControllerButtonEvent::events, this, &ofApp::onControllerButtonEvent);
 
 }
 
@@ -31,16 +40,35 @@ void ofApp::draw(){
 
 }
 
+//--------------------------------------------------------------
 void ofApp::onControllerEvent(ControllerEvent& e) {
-	std::cout << "Controller Event : ";
-	std::cout << e.input->name << " ";
-	std::cout << e.input->id << " ";
-	if (e.input->name == "pot") {
-		std::cout << e.input->fvalue << std::endl;
-	}
-	else {
-		std::cout << e.input->bvalue << std::endl;
-	}
+	string msg = "Controller Event : ";
+	msg += e.input->name + " " + ofToString(e.input->id) + " ";
+	msg += e.input->name == "pot" ? ofToString(e.input->fvalue) : (e.input->bvalue ? "true" : "false");
+	std::cout << msg << std::endl;
+}
+
+//--------------------------------------------------------------
+void ofApp::onControllerRangeEvent(ControllerRangeEvent& e) {
+	string msg = "Range Event : ";
+	msg += e.input->name + " " + ofToString(e.input->id) + " " + ofToString(e.input->fvalue);
+	std::cout << msg << std::endl;
+}
+
+//--------------------------------------------------------------
+void ofApp::onControllerSwitchEvent(ControllerSwitchEvent& e) {
+	string msg = "Switch Event : ";
+	msg += e.input->name + " " + ofToString(e.input->id) + " ";
+	msg += e.input->bvalue ? "true" : "false";
+	std::cout << msg << std::endl;
+}
+
+//--------------------------------------------------------------
+void ofApp::onControllerButtonEvent(ControllerButtonEvent& e) {
+	string msg =  "Button Event : ";
+	msg +=  e.input->name + " " + ofToString(e.input->id) + " ";
+	msg += e.input->bvalue ? "true" : "false";
+	std::cout << msg << std::endl;
 }
 
 //--------------------------------------------------------------
