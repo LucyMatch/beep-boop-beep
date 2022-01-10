@@ -7,10 +7,16 @@ fEATURE
       + define any threshold settings... 
   * a way to templatize / have a config file on the sketch side - define a format
     * then create a command for node app that can generate the config file needed for the sketch
+* OF CLasses
+  * finalizing OSCController classes / events etc.... standardizing for the above
 
 EXAMPLES
 
-* Gui based example ( OF )
+* Gui based examples( OF )
+  * - using ofxRemoteUI
+    - using ofxGUI - ofParameter + events
+* Processing simple example
+* Unity Example 
 
 
 
